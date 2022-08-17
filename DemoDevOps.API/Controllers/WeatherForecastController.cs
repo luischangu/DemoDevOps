@@ -28,11 +28,8 @@ namespace DemoDevOps.API.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
-        }
-        
-        //Create HttpPost
-        
-        
+        }      
+              
         
     }
 }
