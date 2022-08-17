@@ -28,7 +28,18 @@ namespace DemoDevOps.API.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
-        }      
+        }
+
+        public static void MyMethod() 
+        {
+            var tempPath = Path.GetTempFileName();  // Noncompliant
+
+            using (var writer = new StreamWriter(tempPath))
+            {
+                writer.WriteLine("content");
+            }
+
+        }
               
         
     }
