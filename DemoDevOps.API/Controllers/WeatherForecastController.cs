@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Sentry;
 
 namespace DemoDevOps.API.Controllers
 {
@@ -10,12 +11,15 @@ namespace DemoDevOps.API.Controllers
         {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
+        private readonly IHub _sentryHub;
+
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IHub sentryHub)
         {
             _logger = logger;
+            _sentryHub = sentryHub;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
@@ -30,16 +34,29 @@ namespace DemoDevOps.API.Controllers
             .ToArray();
         }
 
-        public static void MyMethod() 
-        {
-            var tempPath = Path.GetTempFileName();  // Noncompliant
+        //HttpGet
 
-            using (var writer = new StreamWriter(tempPath))
+        [HttpGet("Test")]
+        public IActionResult Test() {
+            SentrySdk.CaptureMessage("Hello Sentry");
+
+            try
             {
-                writer.WriteLine("content");
-            }
+                var num1 = 0;
+                var num2 = 14;
 
+                var result = num2 / num1;
+            }
+            catch (Exception ex )
+            {
+                _sentryHub.CaptureException(ex);
+
+                return BadRequest();
+            }
+            return Ok();
         }
+        
+
               
         
     }
